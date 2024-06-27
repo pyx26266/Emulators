@@ -1,13 +1,30 @@
-CC = gcc
-CFLAGS = -Wall -Wextra
+CXX := g++
+CXXFLAGS := -Wall -Wextra -std=c++2a
 
-all: chip8
+SRCS := main.cxx chip8_soc.cxx
 
-run: chip8
-		./chip8
+BUILD_DIR ?= ./build
 
-chip8: main.c
-		$(CC) $(CFLAGS) -o chip8 main.c
+OBJS := $(SRCS:$(BUILD_DIR)/%.cxx=$(BUILD_DIR)/%.o)
 
+$(BUILD_DIR):
+	@mkdir -p $(BUILD_DIR)
+
+EXECUTABLE := $(BUILD_DIR)/chip8
+
+all: $(EXECUTABLE)
+
+run: $(EXECUTABLE)
+	@./$(EXECUTABLE)
+
+# Compile each source file into an object file
+$(BUILD_DIR)/%.o: %.cxx | $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Link the object files to create the executable
+$(EXECUTABLE): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $@
+
+# Clean up intermediate files
 clean:
-		rm -f chip8
+	rm -rf $(BUILD_DIR)
