@@ -10,11 +10,10 @@ void Chip8::LoadToMem(char const* file_name, uint16_t offset) {
     std::istreambuf_iterator<char> end;
     std::vector<unsigned char> buffer(begin, end);
 
-    std::copy(std::begin(buffer), std::end(buffer), (memory_ + offset));
+    // std::copy(std::begin(buffer), std::end(buffer), (ram_[0] + offset));
 }
 
 Chip8::Chip8() {
-    pc_ = kStartAddress;
 }
 
 Chip8::~Chip8(){}

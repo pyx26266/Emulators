@@ -23,7 +23,7 @@ $(BUILD_DIR)/%.o: %.cxx | $(BUILD_DIR)
 
 # Link the object files to create the executable
 $(EXECUTABLE): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $@
+	$(CXX) $(CXXFLAGS) $(OBJS) -w -lSDL2 -o $@
 
 # Clean up intermediate files
 clean:
