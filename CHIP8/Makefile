@@ -1,7 +1,8 @@
 CXX := g++
 CXXFLAGS := -Wall -Wextra -std=c++2a
+LINKER_FLAGS := -lSDL2
 
-SRCS := main.cxx chip8_soc.cxx
+SRCS := main.cxx chip8_soc.cxx peripherals/display.cxx
 
 BUILD_DIR ?= ./build
 
@@ -23,7 +24,7 @@ $(BUILD_DIR)/%.o: %.cxx | $(BUILD_DIR)
 
 # Link the object files to create the executable
 $(EXECUTABLE): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -w -lSDL2 -o $@
+	$(CXX) $(CXXFLAGS) $(OBJS) $(LINKER_FLAGS) -o $@
 
 # Clean up intermediate files
 clean:
