@@ -2,8 +2,11 @@
 
 #include "cpu.hxx"
 
+#include <algorithm>
+
 Instruction Cpu::Fetch() {
-    instruction_.reg = (ram_[program_counter_] << 8u) | ram_[program_counter_+1];
+    instruction_.reg = (ram_[program_counter_] << 8u) | ram_[program_counter_ + 1u];
+    program_counter_ += 2u;
 }
 
 Instruction Cpu::Decode() {
@@ -99,5 +102,161 @@ void Cpu::Execute() {
         case Instruction::SNE_VX_VY: return sne_vx_vy();
         case Instruction::SUBN_VX_VY: return subn_vx_vy();
     }
-    return Instruction();
+}
+
+Cpu::~Cpu()
+{
+}
+
+
+void Cpu::cls() {
+    for (int i = 0xF00; i <= 0xFFF; ++i)
+        ram_[i] = 0;
+    // std::fill(ram_[0xF00], ram_[0xFFF], 0);
+}
+
+void Cpu::ret() {
+    // ToDo: make this 12 bit address aware.
+    program_counter_ = ram_[kStackEnd + --stack_pointer_];
+}
+
+void Cpu::jmp() {
+    program_counter_ = instruction_.duodecimal.address;
+}
+
+void Cpu::rnd() {
+    registers_[instruction_.nibble.x] = /* random_value & */ instruction_.byte.low;
+}
+
+void Cpu::drw() {
+    registers_[0x0F] = 0; // set the collosion flag to false
+    uint8_t x = registers_[instruction_.nibble.x];
+    uint8_t y = registers_[instruction_.nibble.y];
+    for (int i = 0; i < instruction_.nibble.n; ++i, ++y) {
+        uint8_t byte_to_draw = ram_[index_register_ + i];
+        for (int j = 0; j < 8; ++j, ++x) {
+            if (byte_to_draw & (0x80 >> j)) {
+                if (ram_[kFrameBufferStart + x + y])
+                    registers_[0x0F] = true; // set the collosion flag
+                
+                ram_[kFrameBufferStart + x + y] = ram_[kFrameBufferStart + x + y] ^ 1;
+            }
+        }
+    }
+}
+
+void Cpu::skp()
+{
+}
+
+void Cpu::ld_i() {
+    index_register_ = instruction_.duodecimal.address;
+}
+
+void Cpu::sknp()
+{
+}
+
+void Cpu::call()
+{
+}
+
+void Cpu::ld_dt()
+{
+}
+
+void Cpu::ld_st()
+{
+}
+
+void Cpu::shr_vx()
+{
+}
+
+void Cpu::shl_vx()
+{
+}
+
+void Cpu::jp_v0()
+{
+}
+
+void Cpu::ld_vx_k()
+{
+}
+
+void Cpu::ld_f_vx()
+{
+}
+
+void Cpu::ld_b_vx()
+{
+}
+
+void Cpu::ld_i_vx()
+{
+}
+
+void Cpu::ld_vx_i()
+{
+}
+
+void Cpu::ld_vx_dt()
+{
+}
+
+void Cpu::add_i_vx()
+{
+}
+
+void Cpu::se_vx_vy()
+{
+}
+
+void Cpu::ld_vx_kk()
+{
+}
+
+void Cpu::ld_vx_vy()
+{
+}
+
+void Cpu::or_vx_vy()
+{
+}
+
+void Cpu::se_vx_kk()
+{
+}
+
+void Cpu::sne_vx_kk()
+{
+}
+
+void Cpu::add_vx_kk()
+{
+}
+
+void Cpu::and_vx_vy()
+{
+}
+
+void Cpu::xor_vx_vy()
+{
+}
+
+void Cpu::add_vx_vy()
+{
+}
+
+void Cpu::sub_vx_vy()
+{
+}
+
+void Cpu::sne_vx_vy()
+{
+}
+
+void Cpu::subn_vx_vy()
+{
 }

@@ -13,7 +13,7 @@ void Chip8::LoadToMem(char const* file_name, uint16_t offset) {
     // std::copy(std::begin(buffer), std::end(buffer), (ram_[0] + offset));
 }
 
-Chip8::Chip8() {
+Chip8::Chip8(): microprocessor(ram_) {
 }
 
 Chip8::~Chip8(){}

@@ -2,8 +2,7 @@
 
 
 
-Display::Display(uint8_t height, uint8_t width, std::vector<int>& frame_buffer) : 
-    height(height), width(width), frame_buffer(frame_buffer) {}
+Display::Display(std::vector<int>& buffer) : frame_buffer(buffer) {}
 
 void Display::Initialize(int height, int width, std::string_view title) {
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)

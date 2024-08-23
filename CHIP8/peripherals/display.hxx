@@ -16,7 +16,7 @@ private:
     // static std::vector<int> kInternalBuffer = "Display not connected...";
 public:
     // Display() : Display(32, 64, kInternalBuffer) {}
-    Display(uint8_t height, uint8_t width, std::vector<int>& frame_buffer);
+    Display(std::vector<int>& buffer);
     ~Display();
     void Initialize(int height, int width, std::string_view title);
     void PollEvents(/* const std::function<void(int, int)>& on_key */);

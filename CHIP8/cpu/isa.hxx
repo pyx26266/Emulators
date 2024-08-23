@@ -1,7 +1,36 @@
+#ifndef ISA_HXX_
+#define ISA_HXX_
+
+#include <cstdint>
+
+enum class Register {
+    V0, 
+    V1, 
+    V2, 
+    V3, 
+    V4,
+    V5, 
+    V6, 
+    V7, 
+    V8, 
+    V9,
+    VA, 
+    VB, 
+    VC, 
+    VD, 
+    VE, 
+    VF,
+    ST, // Sount Timer 
+    DT, // Display Timer
+    PC, 
+    I, 
+    SP
+};
+
 enum class Instruction {
-    CLS,        // Clear the screen
+    CLS,        // 0x00E0, Clear the screen
+    JMP,        // 0x1nnn, Jump to location nnn
     DRW,
-    JMP,
     RET,
     RND,
     SKP,
@@ -37,61 +66,25 @@ enum class Instruction {
 };
 
 union Opcode {
-    struct Nibble
-    {
+    struct Nibble {
         uint8_t na:4;
         uint8_t x:4;
         uint8_t y:4;
         uint8_t n:4;
-    }nibble;
+    } nibble;
 
-    struct Byte
-    {
+    struct Byte {
         uint8_t high;
         uint8_t low;
-    }byte;
+    } byte;
 
-    struct Duodecimal 
-    {
+    struct Duodecimal {
         uint16_t na:4;
         uint16_t address:12;
-    }duodecimal ;
+    } duodecimal;
 
     uint16_t reg;
     Instruction decode_reg;    
 };
 
-void cls();
-void ret();
-void jmp();
-void rnd();
-void drw();
-void skp();
-void ld_i();
-void sknp();
-void call();
-void ld_dt();
-void ld_st();
-void shr_vx();
-void shl_vx();
-void jp_v0();
-void ld_vx_k();
-void ld_f_vx();
-void ld_b_vx();
-void ld_i_vx();
-void ld_vx_i();
-void ld_vx_dt();
-void add_i_vx();
-void se_vx_vy();
-void ld_vx_kk();
-void ld_vx_vy();
-void or_vx_vy();
-void se_vx_kk();
-void sne_vx_kk();
-void add_vx_kk();
-void and_vx_vy();
-void xor_vx_vy();
-void add_vx_vy();
-void sub_vx_vy();
-void sne_vx_vy();
-void subn_vx_vy();
+#endif // ISA_HXX_

@@ -19,7 +19,7 @@ int main(int argc, char const *argv[])
     
     std::vector<int> buffer(32*64);
 
-    Display screen((uint8_t)32, (uint8_t)64, buffer);
+    Display screen(buffer);
     screen.Initialize(320, 640, "Hello!");
     screen.ClearScreen();
     screen.PollEvents();

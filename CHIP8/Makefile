@@ -2,7 +2,8 @@ CXX := g++
 CXXFLAGS := -Wall -Wextra -std=c++2a
 LINKER_FLAGS := -lSDL2
 
-SRCS := main.cxx chip8_soc.cxx peripherals/display.cxx
+SRCS := main.cxx chip8_soc.cxx peripherals/display.cxx \
+		cpu/cpu.cxx memory/memory.cxx
 
 BUILD_DIR ?= ./build
 
