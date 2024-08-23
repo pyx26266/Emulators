@@ -3,22 +3,29 @@
 #ifndef CHIP8_SOC_H_
 #define CHIP8_SOC_H_
 
+#define ONE_KILO_BYTE (1024)
+
 #include <cstdint>
 
 #include "cpu/cpu.hxx"
 #include "memory/memory.hxx"
+#include "gfx/gfx.hxx"
 
 class Chip8 {
 public:
-    static const uint32_t kStartAddress = 0x200;
-    static const uint32_t kFontStartAddress = 0x50;
+    static const uint16_t kStartAddress = 0x200;
+    static const uint16_t kFontStartAddress = 0x50;
+    static const uint16_t kFrameBufferStart = 0xF00;
 
     Chip8();
     ~Chip8();
     void LoadToMem(char const *file_name, uint16_t offset);
+    uint8_t* VideoOut();
 private:
     Memory ram_; // RAM slot
-    Cpu microprocessor; // CPU slot
+    Cpu mproc; // CPU slot, single core
+    GFX gpu;
+    
     uint32_t video_[64*32] = {};
     uint8_t  delay_timer_ = {};
     uint8_t  sound_timer_ = {};

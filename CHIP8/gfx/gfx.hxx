@@ -1,21 +1,20 @@
 #ifndef GFX_H_
 #define GFX_H_
 
-class Gfx {
+#include <cstdint>
+
+class GFX
+{
 private:
-    /* data */
+    uint8_t *frame_buffer;
 public:
-    Gfx(/* args */);
-    ~Gfx();
+    GFX(uint8_t *vram);
+    uint8_t *VideoOut();
+    ~GFX();
 };
 
-Gfx::Gfx(/* args */)
-{
-}
 
-Gfx::~Gfx()
-{
-}
+
 
 
 #endif // GFX_H_

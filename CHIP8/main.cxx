@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "peripherals/display.hxx"
+#include "chip8_soc.hxx"
 #include <vector>
 #include <cstdint>
 
@@ -12,14 +13,13 @@ const int SCREEN_HEIGHT = 480;
 
 void setK(int k, int v) {}
 
-int main(int argc, char const *argv[])
-{
-    // Chip8 console;
-    // console.LoadToMem("chip8_fonts.bin", Chip8::kFontStartAddress);
-    
-    std::vector<int> buffer(32*64);
+int main(int argc, char const *argv[]) {
+    Chip8 console;
+    Display screen;
 
-    Display screen(buffer);
+    console.LoadToMem("chip8_fonts.bin", Chip8::kFontStartAddress);
+    screen.Connect(console.VideoOut());
+
     screen.Initialize(320, 640, "Hello!");
     screen.ClearScreen();
     screen.PollEvents();

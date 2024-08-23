@@ -6,9 +6,9 @@
 class Memory
 {
 private:
-    uint8_t *banks;
+    uint8_t *banks_;
 public:
-    Memory(/* args */);
+    Memory(uint16_t size);
     ~Memory();
     uint8_t& operator [] (uint16_t);
 };

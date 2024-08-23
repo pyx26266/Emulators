@@ -2,7 +2,7 @@
 
 
 
-Display::Display(std::vector<int>& buffer) : frame_buffer(buffer) {}
+// Display::Display(std::vector<int>& buffer) : frame_buffer(buffer) {}
 
 void Display::Initialize(int height, int width, std::string_view title) {
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -54,7 +54,16 @@ void Display::PresentBackBuffer() {
     SDL_RenderPresent(renderer_);
 }
 
-Display::~Display() {
+void Display::Connect(uint8_t *video_in) {
+    frame_buffer = video_in;
+}
+
+Display::Display()
+{
+}
+
+Display::~Display()
+{
     SDL_DestroyWindow(window_);
     SDL_DestroyRenderer(renderer_);
     SDL_Quit();
