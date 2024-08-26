@@ -21,6 +21,7 @@ public:
     ~Chip8();
     void LoadToMem(char const *file_name, uint16_t offset);
     uint8_t* VideoOut();
+    uint8_t* KeyInput();
 private:
     Memory ram_; // RAM slot
     Cpu mproc; // CPU slot, single core

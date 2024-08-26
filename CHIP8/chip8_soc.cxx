@@ -17,6 +17,10 @@ uint8_t* Chip8::VideoOut() {
     return gpu.VideoOut();
 }
 
+uint8_t *Chip8::KeyInput() {
+    return &ram_[0x600];
+}
+
 Chip8::Chip8() : ram_(6 * ONE_KILO_BYTE),
                  mproc(ram_),
                  gpu(&ram_[kFrameBufferStart]) {

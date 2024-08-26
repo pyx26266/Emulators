@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "peripherals/display.hxx"
+#include "peripherals/keypad.hxx"
 #include "chip8_soc.hxx"
 #include <vector>
 #include <cstdint>
@@ -15,14 +16,15 @@ void setK(int k, int v) {}
 
 int main(int argc, char const *argv[]) {
     Chip8 console;
-    Display screen;
+    Display screen; screen.Connect(console.VideoOut());
+    Keypad controller; controller.Connect(console.KeyInput());
+
 
     console.LoadToMem("chip8_fonts.bin", Chip8::kFontStartAddress);
-    screen.Connect(console.VideoOut());
 
     screen.Initialize(320, 640, "Hello!");
     screen.ClearScreen();
-    screen.PollEvents();
+    controller.PollEvents();
 
 
     printf("Hello to CHIP8\n");
