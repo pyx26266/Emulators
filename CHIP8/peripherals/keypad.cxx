@@ -24,7 +24,7 @@ void Keypad::PollEvents() {
                 LOG_INFO("key pressed: %d", event.key.keysym.sym)
             }
             if (event.type == SDL_KEYUP) {
-                if (event.key.keysym.sym = SDLK_ESCAPE)
+                if (event.key.keysym.sym == SDLK_ESCAPE)
                     quit = true;
                 keypad[keymap[event.key.keysym.sym]] = 0;
                 LOG_INFO("key released: %d", event.key.keysym.sym)

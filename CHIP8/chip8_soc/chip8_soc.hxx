@@ -7,9 +7,9 @@
 
 #include <cstdint>
 
-#include "cpu/cpu.hxx"
-#include "memory/memory.hxx"
-#include "gfx/gfx.hxx"
+#include "../cpu/cpu.hxx"
+#include "../memory/memory.hxx"
+#include "../gfx/gfx.hxx"
 
 class Chip8 {
 public:

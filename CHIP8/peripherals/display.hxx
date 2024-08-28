@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <string_view>
+
 
 class Display {
 private:
@@ -19,11 +21,12 @@ public:
     // Display(std::vector<int>& buffer);
     Display();
     ~Display();
-    void Initialize(int height, int width, std::string_view title);
+    void Initialize(int height, int width, const char *title);
     void PollEvents(/* const std::function<void(int, int)>& on_key */);
     void ClearScreen();
     void DrawPixel(int x, int y, int scale);
     void PresentBackBuffer();
+    void Refresh();
     void Connect(uint8_t *video_in);
 };
 

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "peripherals/display.hxx"
+#include "./peripherals/display.hxx"
 #include "peripherals/keypad.hxx"
 #include "chip8_soc.hxx"
 #include <vector>
@@ -24,6 +24,8 @@ int main(int argc, char const *argv[]) {
 
     screen.Initialize(320, 640, "Hello!");
     screen.ClearScreen();
+    screen.Refresh();
+    screen.PresentBackBuffer();
     controller.PollEvents();
 
 

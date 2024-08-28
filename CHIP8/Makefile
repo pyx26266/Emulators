@@ -3,11 +3,11 @@ CXXFLAGS := -Wall -Wextra -std=c++2a
 LINKER_FLAGS := -lSDL2
 
 SRCS := main.cxx chip8_soc.cxx peripherals/display.cxx \
-		cpu/cpu.cxx memory/memory.cxx gfx/gfx.cxx peripherals/keypad.cxx
+        cpu/cpu.cxx memory/memory.cxx gfx/gfx.cxx peripherals/keypad.cxx
 
 BUILD_DIR ?= ./build
 
-OBJS := $(SRCS:$(BUILD_DIR)/%.cxx=$(BUILD_DIR)/%.o)
+OBJS := $(SRCS:%.cxx=$(BUILD_DIR)/%.o)
 
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)

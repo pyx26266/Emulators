@@ -1,10 +1,11 @@
 #include "display.hxx"
+#include "../logging.hxx"
 
 
 
 // Display::Display(std::vector<int>& buffer) : frame_buffer(buffer) {}
 
-void Display::Initialize(int height, int width, std::string_view title) {
+void Display::Initialize(int height, int width, const char *title) {
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
         std::cerr << "Error in initialising SDL " << SDL_GetError() << std::endl;
@@ -16,26 +17,26 @@ void Display::Initialize(int height, int width, std::string_view title) {
         std::cerr << "SDL Error: " << SDL_GetError() << '\n';
         // return false;
     }
-    SDL_SetWindowTitle(window_, title.data());
+    SDL_SetWindowTitle(window_, title);
 }
 
 void Display::PollEvents(/* const std::function<void(int, int)> &on_key */) {
-    SDL_Event event;
-    bool quit = false;
-    while (!quit) {
+//     SDL_Event event;
+//     bool quit = false;
+//     while (!quit) {
 
-        while (SDL_PollEvent(&event) != 0) {
-            if (event.type == SDL_QUIT) {
-                quit = true;
-            }
-            /* if (event.type == SDL_KEYDOWN) {
-                on_key(event.key.keysym.sym, 1);
-            }
-            if (event.type == SDL_KEYUP) {
-                on_key(event.key.keysym.sym, 0);
-            } */
-        }
-    }
+//         while (SDL_PollEvent(&event) != 0) {
+//             if (event.type == SDL_QUIT) {
+//                 quit = true;
+//             }
+//             /* if (event.type == SDL_KEYDOWN) {
+//                 on_key(event.key.keysym.sym, 1);
+//             }
+//             if (event.type == SDL_KEYUP) {
+//                 on_key(event.key.keysym.sym, 0);
+//             } */
+//         }
+//     }
 }
 
  void Display::ClearScreen() {
@@ -52,6 +53,18 @@ void Display::PollEvents(/* const std::function<void(int, int)> &on_key */) {
 
 void Display::PresentBackBuffer() {
     SDL_RenderPresent(renderer_);
+}
+
+void Display::Refresh() {
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            if (frame_buffer[x + y]) {
+                DrawPixel(x, y, 50);
+                LOG_INFO("drawing pixel x,y %d,%d", x, y);
+            }
+            LOG_INFO("in loop x,y %d,%d", x, y);
+        }
+    }
 }
 
 void Display::Connect(uint8_t *video_in) {

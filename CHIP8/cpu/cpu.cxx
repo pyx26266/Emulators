@@ -1,6 +1,7 @@
 
 
 #include "cpu.hxx"
+#include "logging.hxx"
 
 #include <algorithm>
 
@@ -104,8 +105,8 @@ void Cpu::Execute() {
     }
 }
 
-Cpu::~Cpu()
-{
+Cpu::~Cpu() {
+    LOG_INFO("destructing CPU...");
 }
 
 
