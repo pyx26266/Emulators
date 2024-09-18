@@ -1,7 +1,7 @@
 
 
 #include "cpu.hxx"
-#include "logging.hxx"
+#include "../logging.hxx"
 
 #include <algorithm>
 

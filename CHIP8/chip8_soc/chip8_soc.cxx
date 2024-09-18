@@ -6,11 +6,13 @@
 
 void Chip8::LoadToMem(char const* file_name, uint16_t offset) {
     std::ifstream file(file_name, std::ios::binary|std::ios::in);
-    std::istreambuf_iterator<char> begin(file);
-    std::istreambuf_iterator<char> end;
-    std::vector<unsigned char> buffer(begin, end);
 
-    // std::copy(std::begin(buffer), std::end(buffer), (ram_[0] + offset));
+    // Determine the file size
+    file.seekg(0, std::ios::end);
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    file.read((char*)(&ram_[offset]), size);
 }
 
 uint8_t* Chip8::VideoOut() {

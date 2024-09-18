@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "./peripherals/display.hxx"
+#include "peripherals/display.hxx"
 #include "peripherals/keypad.hxx"
-#include "chip8_soc.hxx"
+#include "chip8_soc/chip8_soc.hxx"
 #include <vector>
 #include <cstdint>
 

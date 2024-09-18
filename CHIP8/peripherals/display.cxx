@@ -6,6 +6,8 @@
 // Display::Display(std::vector<int>& buffer) : frame_buffer(buffer) {}
 
 void Display::Initialize(int height, int width, const char *title) {
+    this->height = height;
+    this->width = width;
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
         std::cerr << "Error in initialising SDL " << SDL_GetError() << std::endl;
@@ -62,7 +64,6 @@ void Display::Refresh() {
                 DrawPixel(x, y, 50);
                 LOG_INFO("drawing pixel x,y %d,%d", x, y);
             }
-            LOG_INFO("in loop x,y %d,%d", x, y);
         }
     }
 }
