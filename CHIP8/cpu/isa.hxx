@@ -67,10 +67,10 @@ enum class Instruction {
 
 union Opcode {
     struct Nibble {
-        uint8_t na:4;
-        uint8_t x:4;
+        uint8_t high:4;
         uint8_t y:4;
-        uint8_t n:4;
+        uint8_t x:4;
+        uint8_t low:4;
     } nibble;
 
     struct Byte {
@@ -79,12 +79,11 @@ union Opcode {
     } byte;
 
     struct Duodecimal {
-        uint16_t na:4;
         uint16_t address:12;
+        uint16_t low:4;
     } duodecimal;
 
-    uint16_t reg;
-    Instruction decode_reg;    
+    uint16_t reg;   
 };
 
 #endif // ISA_HXX_

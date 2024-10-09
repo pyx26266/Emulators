@@ -15,6 +15,12 @@ void Chip8::LoadToMem(char const* file_name, uint16_t offset) {
     file.read((char*)(&ram_[offset]), size);
 }
 
+void Chip8::ClockTick() {
+    mproc.Fetch();
+    mproc.decode_reg = mproc.Decode();
+    mproc.Execute();
+}
+
 uint8_t* Chip8::VideoOut() {
     return gpu.VideoOut();
 }

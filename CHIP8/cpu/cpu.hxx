@@ -14,15 +14,18 @@ public:
     static const uint16_t kFrameBufferEnd = 0xFFF;
     static const uint16_t kProgramStart = 0x200;
     
-    Cpu(Memory &ram): ram_(ram) {}
-    [[nodiscard]] Instruction Fetch();
-    [[nodiscard]] Instruction Decode();
+    Cpu(Memory &ram): ram_(ram) {
+        program_counter_ = kProgramStart;
+    }
+    /* [[nodiscard]] */ Instruction Fetch();
+    /* [[nodiscard]] */ Instruction Decode();
     void Execute();
-
+    // void Run();
     ~Cpu();
+    Opcode instruction_;
+    Instruction decode_reg; 
 protected:
 private:
-    Opcode instruction_;
 
     uint8_t  registers_[0x0F] = {}; // V0-VF
     uint16_t index_register_ = {}; // I

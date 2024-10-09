@@ -20,6 +20,7 @@ public:
     Chip8();
     ~Chip8();
     void LoadToMem(char const *file_name, uint16_t offset);
+    void ClockTick();
     uint8_t* VideoOut();
     uint8_t* KeyInput();
 private:

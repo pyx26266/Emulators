@@ -60,9 +60,12 @@ void Display::PresentBackBuffer() {
 void Display::Refresh() {
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            if (frame_buffer[x + y]) {
-                DrawPixel(x, y, 50);
-                LOG_INFO("drawing pixel x,y %d,%d", x, y);
+            int totalBit = x + y*64;
+            int arrayIndex = totalBit/8;
+            int bitPosition = totalBit%8;
+            if ((frame_buffer[arrayIndex] >> (7 - bitPosition)) & 0x01) {
+                DrawPixel(x, y, 10);
+                // LOG_INFO("drawing pixel x,y %d,%d", x, y);
             }
         }
     }

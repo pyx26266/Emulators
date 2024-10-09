@@ -14,10 +14,10 @@ void Keypad::Connect(uint8_t *controller_in) {
 void Keypad::PollEvents() {
     SDL_Event event;
     bool quit = false;
-    while (!quit) {
+    // while (!quit) {
         while (SDL_PollEvent(&event) != 0) {
             if (event.type == SDL_QUIT) {
-                quit = true;
+                exit(0);
             }
             if (event.type == SDL_KEYDOWN) {
                 keypad[keymap[event.key.keysym.sym]] = 1;
@@ -30,7 +30,7 @@ void Keypad::PollEvents() {
                 LOG_INFO("key released: %d", event.key.keysym.sym)
             }
         }
-    }
+    // }
 }
 
 Keypad::~Keypad()

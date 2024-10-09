@@ -11,9 +11,10 @@ Instruction Cpu::Fetch() {
 }
 
 Instruction Cpu::Decode() {
-    switch (instruction_.byte.high) {
+    LOG_INFO("instruction 0x%X:", instruction_.reg);
+    switch (instruction_.nibble.low) {
         case 0x00:
-            switch (instruction_.byte.low) {
+            switch (instruction_.byte.high) {
                 case 0xE0: return Instruction::CLS;
                 case 0xEE: return Instruction::RET;
                 default:   return Instruction::UNKNOWN;
@@ -26,7 +27,7 @@ Instruction Cpu::Decode() {
         case 0x06: return Instruction::LD_VX_KK;
         case 0x07: return Instruction::ADD_VX_KK;
         case 0x08:
-            switch (instruction_.byte.low) {
+            switch (instruction_.byte.high) {
                 case 0x00: return Instruction::LD_VX_VY;
                 case 0x01: return Instruction::OR_VX_VY;
                 case 0x02: return Instruction::AND_VX_VY;
@@ -44,13 +45,13 @@ Instruction Cpu::Decode() {
         case 0x0C: return Instruction::RND;
         case 0x0D: return Instruction::DRW;
         case 0x0E:
-            switch (instruction_.byte.low) {
+            switch (instruction_.byte.high) {
                 case 0x9E: return Instruction::SKP;
                 case 0xA1: return Instruction::SKNP;
                 default:   return Instruction::UNKNOWN;
             }
         case 0x0F:
-            switch (instruction_.byte.low) {
+            switch (instruction_.byte.high) {
                 case 0x07: return Instruction::LD_VX_DT;
                 case 0x0A: return Instruction::LD_VX_K;
                 case 0x15: return Instruction::LD_DT;
@@ -62,12 +63,14 @@ Instruction Cpu::Decode() {
                 case 0x65: return Instruction::LD_VX_I;
                 default:   return Instruction::UNKNOWN;
             }
-        default: return Instruction::UNKNOWN;
+        default:
+            LOG_INFO("Unknown Instruction 0x%X", instruction_.reg) 
+            return Instruction::UNKNOWN;
     }
 }
 
 void Cpu::Execute() {
-    switch (instruction_.decode_reg) {
+    switch (decode_reg) {
         case Instruction::CLS: return cls();
         case Instruction::RET: return ret();
         case Instruction::JMP: return jmp();
@@ -110,154 +113,235 @@ Cpu::~Cpu() {
 }
 
 
+
 void Cpu::cls() {
+    LOG_INFO("%s called.", __FUNCTION__);
     for (int i = 0xF00; i <= 0xFFF; ++i)
         ram_[i] = 0;
     // std::fill(ram_[0xF00], ram_[0xFFF], 0);
 }
 
 void Cpu::ret() {
+    LOG_INFO("%s called.", __FUNCTION__);
     // ToDo: make this 12 bit address aware.
     program_counter_ = ram_[kStackEnd + --stack_pointer_];
 }
 
 void Cpu::jmp() {
+    LOG_INFO("%s called.", __FUNCTION__);
     program_counter_ = instruction_.duodecimal.address;
 }
 
 void Cpu::rnd() {
-    registers_[instruction_.nibble.x] = /* random_value & */ instruction_.byte.low;
+    LOG_INFO("%s called.", __FUNCTION__);
+    registers_[instruction_.nibble.x] = /* random_value & */ 5 & instruction_.byte.high;
 }
 
 void Cpu::drw() {
+    LOG_INFO("%s called.", __FUNCTION__);
     registers_[0x0F] = 0; // set the collosion flag to false
-    uint8_t x = registers_[instruction_.nibble.x];
-    uint8_t y = registers_[instruction_.nibble.y];
-    for (int i = 0; i < instruction_.nibble.n; ++i, ++y) {
-        uint8_t byte_to_draw = ram_[index_register_ + i];
-        for (int j = 0; j < 8; ++j, ++x) {
-            if (byte_to_draw & (0x80 >> j)) {
-                if (ram_[kFrameBufferStart + x + y])
-                    registers_[0x0F] = true; // set the collosion flag
+    // uint8_t x_cord = registers_[instruction_.nibble.x];
+    // uint8_t y_cord = registers_[instruction_.nibble.y];
+    for (int y = 0; y < instruction_.nibble.high; ++y) {
+        uint8_t byte_to_draw = ram_[index_register_ + y];
+        for (int x = 0; x < 8; ++x) {
+            // uint8_t draw_bit = byte_to_draw & (0x80 >> x);
+            if (byte_to_draw & (0x80 >> x)) {
+                uint16_t px = registers_[instruction_.nibble.x] + x;
+                uint16_t py = registers_[instruction_.nibble.y] + y;
+                uint16_t pixel = px + (py * 64);
+                int arrayIndex = pixel / 8;
+                int bitPosition = pixel % 8;
+
+                if ((ram_[kFrameBufferStart + arrayIndex] >> bitPosition) & 0x01) registers_[0x0F] = true;
+                ram_[kFrameBufferStart + arrayIndex] ^= (1 << (7 - bitPosition));
+
+                // if (ram_[kFrameBufferStart + x + y])
+                //     registers_[0x0F] = true; // set the collosion flag
                 
-                ram_[kFrameBufferStart + x + y] = ram_[kFrameBufferStart + x + y] ^ 1;
+                // ram_[kFrameBufferStart + x + y] = ram_[kFrameBufferStart + x + y] ^ 1;
             }
         }
     }
 }
 
-void Cpu::skp()
-{
+void Cpu::skp() {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::ld_i() {
+    LOG_INFO("%s called.", __FUNCTION__);
     index_register_ = instruction_.duodecimal.address;
 }
 
 void Cpu::sknp()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::call()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    ram_[kStackEnd - stack_pointer_] = program_counter_ >> 8u;
+    stack_pointer_++;
+    ram_[kStackEnd - stack_pointer_] = program_counter_ & 0xFF;
+    stack_pointer_++;
+
+    program_counter_ = instruction_.duodecimal.address;
 }
 
 void Cpu::ld_dt()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::ld_st()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::shr_vx()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::shl_vx()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::jp_v0()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    program_counter_ = instruction_.duodecimal.address + registers_[0x00];
 }
 
 void Cpu::ld_vx_k()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::ld_f_vx()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::ld_b_vx()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::ld_i_vx()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::ld_vx_i()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::ld_vx_dt()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::add_i_vx()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
-void Cpu::se_vx_vy()
-{
+void Cpu::se_vx_vy() {
+    LOG_INFO("%s called.", __FUNCTION__);
+    if (registers_[instruction_.nibble.x] == instruction_.nibble.y) {
+        program_counter_ += 2;
+    }
 }
 
-void Cpu::ld_vx_kk()
-{
+void Cpu::ld_vx_kk() {
+    LOG_INFO("%s called.", __FUNCTION__);
+    registers_[instruction_.nibble.x] = instruction_.byte.high;
 }
 
 void Cpu::ld_vx_vy()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    registers_[instruction_.nibble.x] = instruction_.nibble.y;
 }
 
 void Cpu::or_vx_vy()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::se_vx_kk()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::sne_vx_kk()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    if (registers_[instruction_.nibble.x] != instruction_.byte.high) {
+        program_counter_ += 2;
+    }
 }
 
 void Cpu::add_vx_kk()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    registers_[instruction_.nibble.x] += instruction_.byte.high;
 }
 
 void Cpu::and_vx_vy()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::xor_vx_vy()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::add_vx_vy()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::sub_vx_vy()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
 
 void Cpu::sne_vx_vy()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    if (registers_[instruction_.nibble.x] != registers_[instruction_.nibble.y]) {
+        program_counter_ += 2;
+    }
 }
 
 void Cpu::subn_vx_vy()
 {
+    LOG_INFO("%s called.", __FUNCTION__);
+    LOG_INFO("%s not implemented.", __FUNCTION__);
 }
